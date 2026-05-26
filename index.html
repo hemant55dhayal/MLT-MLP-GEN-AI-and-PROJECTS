@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Study Hub — IIT Madras BS</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08090c;
+  --surface: #0f1117;
+  --surface-2: #161921;
+  --surface-3: #1c2029;
+  --border: #252a36;
+  --border-hover: #353c4e;
+  --text: #e6e8ee;
+  --text-muted: #7b8298;
+  --text-dim: #4e5568;
+
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.1);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.1);
+  --purple: #c084fc;
+  --purple-dim: rgba(192,132,252,0.1);
+  --green: #4ade80;
+  --green-dim: rgba(74,222,128,0.08);
+  --rose: #fb7185;
+  --rose-dim: rgba(251,113,133,0.08);
+  --yellow: #fbbf24;
+  --yellow-dim: rgba(251,191,36,0.08);
+  --teal: #2dd4bf;
+  --teal-dim: rgba(45,212,191,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(8,9,12,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+
+.header-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.5px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.header-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--green-dim);
+  color: var(--green);
+  letter-spacing: 0.5px;
+}
+
+/* ─── NAV TABS ─── */
+.nav {
+  display: flex;
+  gap: 2px;
+  padding: 0 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav::-webkit-scrollbar { display: none; }
+
+.nav-tab {
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+  user-select: none;
+}
+
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active { color: var(--text); border-bottom-color: var(--blue); font-weight: 600; }
+
+.nav-tab .tab-emoji { margin-right: 6px; }
+
+/* ─── COURSE FILTER ─── */
+.filter-bar {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.filter-chip:hover { border-color: var(--border-hover); color: var(--text); }
+.filter-chip.active { background: var(--blue-dim); border-color: rgba(96,165,250,0.3); color: var(--blue); }
+.filter-chip[data-course="mlt"].active { background: var(--blue-dim); border-color: rgba(96,165,250,0.3); color: var(--blue); }
+.filter-chip[data-course="mlp"].active { background: var(--orange-dim); border-color: rgba(251,146,60,0.3); color: var(--orange); }
+.filter-chip[data-course="dlgenai"].active { background: var(--purple-dim); border-color: rgba(192,132,252,0.3); color: var(--purple); }
+.filter-chip[data-course="general"].active { background: var(--teal-dim); border-color: rgba(45,212,191,0.3); color: var(--teal); }
+
+/* ─── MAIN CONTENT ─── */
+.main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ─── ANNOUNCEMENTS ─── */
+.announcement {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-top: 14px;
+  transition: border-color 0.2s;
+  position: relative;
+}
+
+.announcement:hover { border-color: var(--border-hover); }
+
+.announcement.pinned {
+  border-color: rgba(251,191,36,0.3);
+  background: linear-gradient(135deg, var(--surface), rgba(251,191,36,0.03));
+}
+
+.announcement.pinned::before {
+  content: '📌 Pinned';
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--yellow);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ann-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.ann-course {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.ann-course.mlt { background: var(--blue-dim); color: var(--blue); }
+.ann-course.mlp { background: var(--orange-dim); color: var(--orange); }
+.ann-course.dlgenai { background: var(--purple-dim); color: var(--purple); }
+.ann-course.general { background: var(--teal-dim); color: var(--teal); }
+
+.ann-date { font-size: 12px; color: var(--text-dim); font-family: 'Fira Code', monospace; }
+
+.announcement h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.announcement p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+.announcement a { color: var(--blue); text-decoration: none; }
+.announcement a:hover { text-decoration: underline; }
+
+/* ─── SCHEDULE ─── */
+.schedule-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-top: 14px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  transition: border-color 0.2s;
+}
+
+.schedule-item:hover { border-color: var(--border-hover); }
+
+.sch-date-box {
+  flex-shrink: 0;
+  width: 56px;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.sch-date-box .month {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+}
+
+.sch-date-box .day {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.sch-info { flex: 1; }
+.sch-info h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.sch-info .sch-time { font-family: 'Fira Code', monospace; font-size: 13px; color: var(--blue); margin-bottom: 4px; }
+.sch-info p { font-size: 13px; color: var(--text-muted); }
+
+.sch-status {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  align-self: center;
+}
+
+.sch-status.upcoming { background: var(--blue-dim); color: var(--blue); }
+.sch-status.done { background: var(--green-dim); color: var(--green); }
+.sch-status.live { background: var(--rose-dim); color: var(--rose); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+
+/* ─── RESOURCES ─── */
+.resource-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 640px) { .resource-grid { grid-template-columns: 1fr; } }
+
+.resource-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.resource-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+
+.resource-card .rc-type {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.rc-type.pdf { background: var(--rose-dim); color: var(--rose); }
+.rc-type.video { background: var(--blue-dim); color: var(--blue); }
+.rc-type.notebook { background: var(--orange-dim); color: var(--orange); }
+.rc-type.link { background: var(--green-dim); color: var(--green); }
+.rc-type.notes { background: var(--purple-dim); color: var(--purple); }
+.rc-type.guide { background: var(--yellow-dim); color: var(--yellow); }
+
+.resource-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.resource-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px; }
+
+.rc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.rc-link:hover { text-decoration: underline; }
+
+/* ─── NOTES ─── */
+.note-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-top: 14px;
+  transition: border-color 0.2s;
+}
+
+.note-card:hover { border-color: var(--border-hover); }
+
+.note-card .note-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.note-card h3 { font-size: 16px; font-weight: 700; }
+.note-card .note-body { font-size: 14px; color: var(--text-muted); line-height: 1.8; }
+.note-card .note-body strong { color: var(--text); }
+.note-card .note-body code {
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  background: var(--surface-3);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--orange);
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+}
+
+.empty-state .es-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state h3 { font-size: 18px; color: var(--text-muted); margin-bottom: 6px; }
+.empty-state p { font-size: 14px; }
+
+/* ─── FOOTER ─── */
+.site-footer {
+  text-align: center;
+  padding: 32px 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 13px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.site-footer a { color: var(--text-muted); }
+
+/* ─── MOBILE ─── */
+@media (max-width: 600px) {
+  .schedule-item { flex-direction: column; gap: 12px; }
+  .sch-date-box { width: auto; display: flex; gap: 8px; align-items: center; padding: 6px 12px; }
+  .sch-status { align-self: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">🎯</div>
+      ML Study Hub
+    </a>
+    <span class="header-badge">IIT Madras BS</span>
+  </div>
+</header>
+
+<nav class="nav" id="nav">
+  <div class="nav-tab active" data-tab="announcements"><span class="tab-emoji">📢</span>Announcements</div>
+  <div class="nav-tab" data-tab="schedule"><span class="tab-emoji">📅</span>Schedule</div>
+  <div class="nav-tab" data-tab="resources"><span class="tab-emoji">📚</span>Resources</div>
+  <div class="nav-tab" data-tab="notes"><span class="tab-emoji">📝</span>Notes</div>
+</nav>
+
+<div class="filter-bar" id="filterBar">
+  <div class="filter-chip active" data-course="all">All</div>
+  <div class="filter-chip" data-course="mlt">📘 MLT</div>
+  <div class="filter-chip" data-course="mlp">🔧 MLP</div>
+  <div class="filter-chip" data-course="dlgenai">🧠 DL & GenAI</div>
+  <div class="filter-chip" data-course="general">📌 General</div>
+</div>
+
+<main class="main">
+  <div class="tab-content active" id="tab-announcements"></div>
+  <div class="tab-content" id="tab-schedule"></div>
+  <div class="tab-content" id="tab-resources"></div>
+  <div class="tab-content" id="tab-notes"></div>
+</main>
+
+<footer class="site-footer">
+  ML Study Hub · Built by Hemant · IIT Madras BS Programme<br>
+  <span style="opacity:0.5;">MLT · MLP · DL & GenAI — 2026</span>
+</footer>
+
+<script>
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  📝 EDIT YOUR DATA HERE — This is your "database"          ║
+// ║  Just edit the arrays below and redeploy on Vercel.         ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+const DATA = {
+
+  // ─── ANNOUNCEMENTS ───
+  announcements: [
+    {
+      course: "general",
+      pinned: true,
+      date: "2026-05-26",
+      title: "🚀 Welcome to ML Study Hub!",
+      body: "This is our one-stop hub for all ML course resources, schedules, and notes. Bookmark this page! Sessions will be conducted by Pankaj. Orientation guides for all 3 courses are available in the Resources tab."
+    },
+    {
+      course: "dlgenai",
+      pinned: true,
+      date: "2026-05-26",
+      title: "DL & GenAI Project — Registration Open",
+      body: "Project statement is out! Set up your Kaggle, GitHub, and W&B accounts ASAP. Registration Form deadline: June 30. Don't forget — you need all 3 platforms set up + at least 2 milestones to be eligible for viva."
+    },
+    {
+      course: "mlt",
+      pinned: false,
+      date: "2026-05-26",
+      title: "MLT Week 1 — PCA Session This Week",
+      body: "Our first session covers Principal Component Analysis. Come with pen & paper. We'll work through a full numerical example by hand. Pre-read: understand what eigenvalues and eigenvectors are (watch 3Blue1Brown if needed)."
+    },
+    {
+      course: "mlp",
+      pinned: false,
+      date: "2026-05-26",
+      title: "MLP — Set Up Your Environment",
+      body: "Before our first session, make sure you have: Python 3.9+, Jupyter Notebook, and scikit-learn installed. Run: pip install numpy pandas scikit-learn matplotlib seaborn jupyter. Also create a Kaggle account."
+    },
+    {
+      course: "general",
+      pinned: false,
+      date: "2026-05-25",
+      title: "Beginner's Roadmap Available",
+      body: "If you're a complete beginner, check the Resources tab — there's a full 'Zero to ML' roadmap covering all prerequisites, study order, free resources, and time estimates. Start from Level 0 if needed. No shame in that."
+    },
+  ],
+
+  // ─── SCHEDULE ───
+  schedule: [
+    {
+      course: "mlt",
+      date: "2026-06-01",
+      month: "JUN",
+      day: "01",
+      title: "MLT Week 1 — PCA Orientation",
+      time: "7:00 PM – 8:30 PM IST",
+      description: "Covariance matrix, eigenvalues, choosing k, reconstruction error. Bring pen & paper.",
+      status: "upcoming",
+      link: ""
+    },
+    {
+      course: "mlp",
+      date: "2026-06-02",
+      month: "JUN",
+      day: "02",
+      title: "MLP Week 1 — End-to-End ML Project",
+      time: "7:00 PM – 8:30 PM IST",
+      description: "Load data → split → train → predict → evaluate. California Housing walkthrough.",
+      status: "upcoming",
+      link: ""
+    },
+    {
+      course: "dlgenai",
+      date: "2026-06-03",
+      month: "JUN",
+      day: "03",
+      title: "DL & GenAI — Project Orientation",
+      time: "7:00 PM – 9:00 PM IST",
+      description: "Grading formula, 3-model requirement, Kaggle + GitHub + W&B setup live demo.",
+      status: "upcoming",
+      link: ""
+    },
+    {
+      course: "mlt",
+      date: "2026-06-08",
+      month: "JUN",
+      day: "08",
+      title: "MLT Week 2 — Kernel PCA",
+      time: "7:00 PM – 8:30 PM IST",
+      description: "Kernel trick, Gram matrix, RBF kernel, centering in feature space.",
+      status: "upcoming",
+      link: ""
+    },
+    {
+      course: "mlp",
+      date: "2026-06-09",
+      month: "JUN",
+      day: "09",
+      title: "MLP Week 2 — Preprocessing & Pipelines",
+      time: "7:00 PM – 8:30 PM IST",
+      description: "Imputation, scaling, encoding, ColumnTransformer, Pipeline, GridSearchCV.",
+      status: "upcoming",
+      link: ""
+    },
+  ],
+
+  // ─── RESOURCES ───
+  resources: [
+    {
+      course: "general",
+      type: "guide",
+      title: "Beginner's Roadmap — Zero to ML",
+      description: "Complete learning path from absolute zero through all 3 courses. Prerequisites, study order, free resources, time estimates.",
+      link: "#"
+    },
+    {
+      course: "mlt",
+      type: "guide",
+      title: "MLT Orientation Guide — Weeks 1–4",
+      description: "PCA, Kernel PCA, K-Means, MLE/Bayesian/EM. Week-by-week breakdown with key formulas and teaching plan.",
+      link: "#"
+    },
+    {
+      course: "mlp",
+      type: "guide",
+      title: "MLP Orientation Guide — Weeks 1–4",
+      description: "End-to-end ML, preprocessing, linear regression, regularization. All scikit-learn APIs listed.",
+      link: "#"
+    },
+    {
+      course: "dlgenai",
+      type: "guide",
+      title: "DL & GenAI Orientation Guide",
+      description: "Project milestones, grading, viva prep, 3-model requirement, senior tips, session plan.",
+      link: "#"
+    },
+    {
+      course: "mlt",
+      type: "video",
+      title: "3Blue1Brown — Essence of Linear Algebra",
+      description: "Visual explanations of vectors, matrices, eigenvalues. Essential for understanding PCA.",
+      link: "https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab"
+    },
+    {
+      course: "general",
+      type: "video",
+      title: "StatQuest — ML Playlist",
+      description: "Josh Starmer explains ML algorithms with zero jargon. Start here if math feels scary.",
+      link: "https://www.youtube.com/c/joshstarmer"
+    },
+    {
+      course: "mlp",
+      type: "notebook",
+      title: "MLP Class Notebooks (GitHub)",
+      description: "Community Jupyter notebooks covering every week of MLP. California Housing + MNIST examples.",
+      link: "https://github.com/esviswajith95/MLP"
+    },
+    {
+      course: "mlp",
+      type: "link",
+      title: "Scikit-Learn Official Docs",
+      description: "Your primary reference for all sklearn APIs. Every function has examples.",
+      link: "https://scikit-learn.org/stable/"
+    },
+    {
+      course: "dlgenai",
+      type: "notebook",
+      title: "Kaggle — Crime Category Prediction (IITM MLP)",
+      description: "Past IITM project notebook. Study the approach, preprocessing, and model selection.",
+      link: "https://www.kaggle.com/code/malkaggle/crime-category-prediction-iitm-mlp-project"
+    },
+    {
+      course: "general",
+      type: "link",
+      title: "Kaggle Learn — Free Micro-Courses",
+      description: "Python, Pandas, Data Viz, Intro to ML, Feature Engineering. 3–4 hours each.",
+      link: "https://www.kaggle.com/learn"
+    },
+    {
+      course: "dlgenai",
+      type: "video",
+      title: "Andrej Karpathy — Zero to Hero",
+      description: "Builds GPT from scratch. The best DL content on the internet. Watch after MLT/MLP.",
+      link: "https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ"
+    },
+    {
+      course: "dlgenai",
+      type: "link",
+      title: "HuggingFace Learn",
+      description: "Free course on Transformers and NLP. Essential for DL & GenAI project.",
+      link: "https://huggingface.co/learn"
+    },
+    {
+      course: "dlgenai",
+      type: "link",
+      title: "PyTorch 60-Minute Blitz",
+      description: "Official PyTorch tutorial. Tensors → autograd → neural nets in one sitting.",
+      link: "https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html"
+    },
+    {
+      course: "general",
+      type: "link",
+      title: "Khan Academy — Math Foundations",
+      description: "Algebra, Calculus, Probability, Linear Algebra. Free with built-in practice problems.",
+      link: "https://www.khanacademy.org"
+    },
+  ],
+
+  // ─── NOTES ───
+  notes: [
+    {
+      course: "mlt",
+      date: "2026-05-26",
+      title: "PCA — Quick Summary",
+      body: `<strong>What:</strong> Find directions of maximum variance in data.
+<strong>Steps:</strong> Center data → Covariance matrix Σ = (1/n)XᶜᵀXᶜ → Eigendecompose → Pick top-k eigenvectors → Project.
+<strong>Key formula:</strong> <code>Σ = UΛUᵀ</code>
+<strong>Choose k:</strong> Look at explained variance ratio or scree plot.
+<strong>Limitation:</strong> Linear only — can't capture curved structure (that's why Kernel PCA exists).`
+    },
+    {
+      course: "mlt",
+      date: "2026-05-26",
+      title: "K-Means — Quick Summary",
+      body: `<strong>What:</strong> Partition data into k clusters.
+<strong>Steps:</strong> Init k centroids → Assign each point to nearest centroid → Update centroids = cluster mean → Repeat.
+<strong>Objective:</strong> <code>J = Σ ||x - μₖ||²</code> (minimize within-cluster sum of squares)
+<strong>K-Means++:</strong> Smart initialization — pick centroids far apart using D(x)² probability.
+<strong>Pitfall:</strong> Must choose k in advance. Sensitive to initialization. Assumes spherical clusters.`
+    },
+    {
+      course: "mlp",
+      date: "2026-05-26",
+      title: "Scikit-Learn Pipeline Cheat Sheet",
+      body: `<strong>Why Pipeline?</strong> Keeps preprocessing reproducible. Prevents data leakage.
+
+<code>Pipeline([('scaler', StandardScaler()), ('model', Ridge())])</code>
+
+<strong>With ColumnTransformer:</strong>
+<code>ColumnTransformer([('num', StandardScaler(), num_cols), ('cat', OneHotEncoder(), cat_cols)])</code>
+
+<strong>With GridSearchCV:</strong>
+<code>GridSearchCV(pipe, {'model__alpha': [0.1, 1, 10]}, cv=5)</code>
+
+<strong>Rule:</strong> Always fit on train, transform on both train & test. Pipeline handles this automatically.`
+    },
+    {
+      course: "dlgenai",
+      date: "2026-05-26",
+      title: "PyTorch Training Loop Template",
+      body: `<strong>The pattern you'll use 100 times:</strong>
+
+<code>for epoch in range(num_epochs):</code>
+<code>    for batch_x, batch_y in dataloader:</code>
+<code>        pred = model(batch_x)        # forward</code>
+<code>        loss = criterion(pred, batch_y) # loss</code>
+<code>        optimizer.zero_grad()          # clear grads</code>
+<code>        loss.backward()                # backward</code>
+<code>        optimizer.step()               # update</code>
+
+<strong>Remember:</strong> zero_grad → forward → loss → backward → step. This order matters.`
+    },
+  ],
+};
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  ⚡ APP LOGIC — You don't need to edit below this line     ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+let activeTab = 'announcements';
+let activeFilter = 'all';
+
+// Tabs
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeTab = tab.dataset.tab;
+    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+    document.getElementById('tab-' + activeTab).classList.add('active');
+  });
+});
+
+// Filters
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    activeFilter = chip.dataset.course;
+    renderAll();
+  });
+});
+
+function filterByCourse(items) {
+  if (activeFilter === 'all') return items;
+  return items.filter(i => i.course === activeFilter);
+}
+
+function courseTag(course) {
+  const labels = { mlt: 'MLT', mlp: 'MLP', dlgenai: 'DL & GenAI', general: 'General' };
+  return `<span class="ann-course ${course}">${labels[course] || course}</span>`;
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function emptyState(icon, title, desc) {
+  return `<div class="empty-state"><div class="es-icon">${icon}</div><h3>${title}</h3><p>${desc}</p></div>`;
+}
+
+// Render announcements
+function renderAnnouncements() {
+  const container = document.getElementById('tab-announcements');
+  const items = filterByCourse(DATA.announcements);
+  if (!items.length) { container.innerHTML = emptyState('📢', 'No announcements', 'Nothing here for this filter yet.'); return; }
+
+  const sorted = [...items].sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    return new Date(b.date) - new Date(a.date);
+  });
+
+  container.innerHTML = sorted.map(a => `
+    <div class="announcement ${a.pinned ? 'pinned' : ''}" data-course="${a.course}">
+      <div class="ann-meta">
+        ${courseTag(a.course)}
+        <span class="ann-date">${formatDate(a.date)}</span>
+      </div>
+      <h3>${a.title}</h3>
+      <p>${a.body}</p>
+    </div>
+  `).join('');
+}
+
+// Render schedule
+function renderSchedule() {
+  const container = document.getElementById('tab-schedule');
+  const items = filterByCourse(DATA.schedule);
+  if (!items.length) { container.innerHTML = emptyState('📅', 'No sessions scheduled', 'Nothing here for this filter yet.'); return; }
+
+  const sorted = [...items].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  container.innerHTML = sorted.map(s => `
+    <div class="schedule-item" data-course="${s.course}">
+      <div class="sch-date-box">
+        <div class="month">${s.month}</div>
+        <div class="day">${s.day}</div>
+      </div>
+      <div class="sch-info">
+        <div class="ann-meta" style="margin-bottom:4px;">${courseTag(s.course)}</div>
+        <h3>${s.title}</h3>
+        <div class="sch-time">${s.time}</div>
+        <p>${s.description}</p>
+        ${s.link ? `<a href="${s.link}" target="_blank" style="color:var(--blue);font-size:13px;font-weight:600;margin-top:6px;display:inline-block;">Join Meeting →</a>` : ''}
+      </div>
+      <span class="sch-status ${s.status}">${s.status}</span>
+    </div>
+  `).join('');
+}
+
+// Render resources
+function renderResources() {
+  const container = document.getElementById('tab-resources');
+  const items = filterByCourse(DATA.resources);
+  if (!items.length) { container.innerHTML = emptyState('📚', 'No resources', 'Nothing here for this filter yet.'); return; }
+
+  container.innerHTML = `<div class="resource-grid">${items.map(r => `
+    <div class="resource-card" data-course="${r.course}">
+      <span class="rc-type ${r.type}">${r.type}</span>
+      <div class="ann-meta" style="margin-bottom:6px;">${courseTag(r.course)}</div>
+      <h3>${r.title}</h3>
+      <p>${r.description}</p>
+      ${r.link && r.link !== '#' ? `<a class="rc-link" href="${r.link}" target="_blank">Open →</a>` : `<span style="font-size:12px;color:var(--text-dim);">Link coming soon</span>`}
+    </div>
+  `).join('')}</div>`;
+}
+
+// Render notes
+function renderNotes() {
+  const container = document.getElementById('tab-notes');
+  const items = filterByCourse(DATA.notes);
+  if (!items.length) { container.innerHTML = emptyState('📝', 'No notes', 'Nothing here for this filter yet.'); return; }
+
+  container.innerHTML = items.map(n => `
+    <div class="note-card" data-course="${n.course}">
+      <div class="note-head">
+        ${courseTag(n.course)}
+        <span class="ann-date">${formatDate(n.date)}</span>
+      </div>
+      <h3>${n.title}</h3>
+      <div class="note-body">${n.body}</div>
+    </div>
+  `).join('');
+}
+
+function renderAll() {
+  renderAnnouncements();
+  renderSchedule();
+  renderResources();
+  renderNotes();
+}
+
+// Initial render
+renderAll();
+</script>
+</body>
+</html>
